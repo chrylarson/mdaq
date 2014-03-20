@@ -24,10 +24,12 @@
 /home/chris/android/mdaq/platforms/android/assets/www/favicon.ico \
 /home/chris/android/mdaq/platforms/android/assets/www/plugins \
 /home/chris/android/mdaq/platforms/android/assets/www/views \
+/home/chris/android/mdaq/platforms/android/assets/www/scripts/cordova.js \
 /home/chris/android/mdaq/platforms/android/assets/www/scripts/vendor.js \
 /home/chris/android/mdaq/platforms/android/assets/www/scripts/scripts.js \
 /home/chris/android/mdaq/platforms/android/assets/www/scripts/cordova \
 /home/chris/android/mdaq/platforms/android/assets/www/scripts/cordova/cordova.js \
+/home/chris/android/mdaq/platforms/android/assets/www/scripts/cordova/fsCordova.js \
 /home/chris/android/mdaq/platforms/android/assets/www/styles/main.css \
 /home/chris/android/mdaq/platforms/android/assets/www/images/yeoman.png \
 /home/chris/android/mdaq/platforms/android/assets/www/plugins/org.apache.cordova.device-motion \

@@ -1,20 +1,21 @@
 'use strict';
 
 angular.module('yoApp')
-  .controller('MainCtrl', function ($rootScope, $scope, $http, $localStorage, $sessionStorage, Cordova) {
+  .controller('MainCtrl', function ($rootScope, $scope, $http, $localStorage, $sessionStorage, CordovaService) {
 
   	$scope.$storage = $localStorage;
 
     console.log("Start main");
-    Cordova.ready.then(function() {
+    CordovaService.ready.then(function() {
     	console.log("Cordova Ready")
 	    //cordova ready
-	    navigator.accelerometer.getCurrentAcceleration(onSuccess, onError);
+      console.log(navigator);
+      navigator.accelerometer.getCurrentAcceleration(accelerometerSuccess, accelerometerError);
 	});
 
     // onSuccess: Get a snapshot of the current acceleration
     //
-    function onSuccess(acceleration) {
+    function accelerometerSuccess(acceleration) {
         alert('Acceleration X: ' + acceleration.x + '\n' +
               'Acceleration Y: ' + acceleration.y + '\n' +
               'Acceleration Z: ' + acceleration.z + '\n' +
@@ -23,7 +24,7 @@ angular.module('yoApp')
 
     // onError: Failed to get the acceleration
     //
-    function onError() {
+    function accelerometerError() {
         alert('onError!');
     }
 

@@ -5,6 +5,7 @@ angular.module('yoApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
+  'fsCordova',
   'ngStorage'
 ])
   .config(function ($routeProvider, $sceDelegateProvider) {
@@ -16,10 +17,10 @@ angular.module('yoApp', [
       .otherwise({
         redirectTo: '/'
       });
-      $sceDelegateProvider.resourceUrlWhitelist([
-       'self',
-       "https://embed.spotify.com/**"
-      ]);
+      // $sceDelegateProvider.resourceUrlWhitelist([
+      //  'self',
+      //  "https://embed.spotify.com/**"
+      // ]);
   })
   .run(['$rootScope', '$location', '$localStorage', '$sessionStorage',  function ($rootScope, $location, $localStorage, $sessionStorage) {
         $rootScope.$storage = $localStorage;
