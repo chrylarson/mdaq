@@ -24,12 +24,6 @@ angular.module('yoApp', [
   })
   .run(['$rootScope', '$location', '$localStorage', '$sessionStorage',  function ($rootScope, $location, $localStorage, $sessionStorage) {
         $rootScope.$storage = $localStorage;
-        $rootScope.url = "http://sxsw.joehack3r.com:3000/";
-        console.log($rootScope.$storage.email);
-          if (typeof $rootScope.$storage.email !== 'undefined') {
-            $location.path('');
-          }
-          else {
-            $location.path('/start');
-          }
+        
+        $rootScope.url = 'http://jarvis-dev.niwsc.com/deviceapi-2.0/rest';
     }]);

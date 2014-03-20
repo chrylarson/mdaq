@@ -1,10 +1,5 @@
 <div class="header">
-  <ul class="nav nav-pills pull-right">
-    <li class="active"><a ng-href="#">Home</a></li>
-    <li><a ng-href="#">About</a></li>
-    <li><a ng-href="#">Contact</a></li>
-  </ul>
-  <h3 class="text-muted">yo</h3>
+
 </div>
 
 <div class="jumbotron">
@@ -16,21 +11,32 @@
   <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!</a></p>
 </div>
 
+<div>
+    <form ng-submit="createDevice(register.name)" name='registerForm' class="form-signin">
+        <h4 class="form-signin-heading">Please enter your email address</h4>
+        <p>Your email address will be used as the unique name of your phone.</p>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Email Address" ng-model="register.name" autofocus="">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Register this phone</button>
+        </div>
+    </form>
+</div>
+
 <div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
+  <h4>Accelerometer</h4>
   <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
+    The X, Y, and Z axis of the accelerometer are sampled every 3 seconds.
   </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+  <ul>
+  <li>Acc X: {{accX}}</li>
+  <li>Acc Y: {{accY}}</li>
+  <li>Acc Z: {{accZ}}</li>
+  <li>Sample Time: {{accTimestamp}}</li>
+  </ul>
 </div>
 
 <div class="footer">
-  <p>♥ from the Yeoman team</p>
+  <p>♥ from the NI Cloud team</p>
 </div>
