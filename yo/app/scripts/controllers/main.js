@@ -3,6 +3,7 @@
 angular.module('yoApp')
   .controller('MainCtrl', function ($rootScope, $scope, $http, $localStorage, $sessionStorage, $interval, CordovaService) {
 
+    var demoMode = true;
   	$scope.$storage = $localStorage;
     $scope.$storage.channels = [];
 
@@ -13,38 +14,48 @@ angular.module('yoApp')
 
     console.log("Start main");
     CordovaService.ready.then(function() {
-    	console.log("Cordova Ready")
-	    //cordova ready
-      //console.log(navigator);
+      //cordova ready
+    	console.log("Cordova Ready");
+      demoMode = false;
       //navigator.accelerometer.getCurrentAcceleration(accelerometerSuccess, accelerometerError);
       var intervalId = $interval(function () {
         navigator.accelerometer.getCurrentAcceleration(accelerometerSuccess, accelerometerError);
       }, 2000);
     });
 
-
+if(demoMode = true){
 var intervalId = $interval(function () {
   var channelData = [];
   var deviceId = '';
   var currenTime = new Date().getTime();
         $scope.$storage.channels.forEach(function (d, index) {
-          console.log(d.channelId);
+          console.log(d.id);
           if (d.channelId !== 0) {
-              channelData.push({"t0":currenTime,"channelId":d.channelId,"dt":[0],"values":[2]});
+              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[2]});
               deviceId =d.deviceId;
           } 
-          if(channelData.length>1){
-            writeChannel(deviceId, channelData);
-          }
+          
           
         });
 
-      }, 2000);
+        if(channelData.length>1){
+          console.log("Write Channel Data");
+            writeChannel(deviceId, channelData);
+          }
 
+      }, 2000);
+} else {
+  if (angular.isDefined(intervalId)) {
+        $interval.cancel(intervalId);
+        intervalId = undefined;
+      }
+}
     // onSuccess: Get a snapshot of the current acceleration
     //
     function accelerometerSuccess(acceleration) {
       var channelData = [];
+      var deviceId = '';
+      var currenTime = new Date().getTime();
       console.log(acceleration);
       $scope.accX = acceleration.x;
       $scope.accY = acceleration.y;
@@ -53,15 +64,24 @@ var intervalId = $interval(function () {
       $scope.$apply();
 
       $scope.$storage.channels.forEach(function (d, index) {
+        console.log(d);
+        deviceId =d.deviceId;
           if (d.channelName === "Accelerometer X") {
-              channelData.push({"t0":acceleration.timestamp,"channelId":d.channelId,"dt":[0],"values":[acceleration.x]});
+            console.log("channel ID: " + d.id);
+              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[acceleration.x]});
           } else if (d.channelName === "Accelerometer Y") {
-              channelData.push({"t0":acceleration.timestamp,"channelId":d.channelId,"dt":[0],"values":[acceleration.y]});
+            console.log("channel ID: " + d.id);
+              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[acceleration.y]});
           } else if (d.channelName === "Accelerometer Z") {
-              channelData.push({"t0":acceleration.timestamp,"channelId":d.channelId,"dt":[0],"values":[acceleration.z]});
+            console.log("channel ID: " + d.id);
+              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[acceleration.z]});
           }
-          writeChannel($scope.$storage.device.deviceId, channelData);
       });
+
+      if(channelData.length>1){
+        console.log("Write Channel Data");
+        writeChannel(deviceId, channelData);
+      }
 
     }
 
@@ -127,8 +147,9 @@ var intervalId = $interval(function () {
             },
             headers: {'Content-Type': 'application/json', 'x-ni-apikey':'MGCTApKKBaInxrBIsSGYeHAWALYcnnLM'}
         }).success(function (result) {
-          console.log(result);
+          console.log("add channel");
           $scope.$storage.channels.push(result);
+          console.log($scope.$storage);
         }).error(function (response, status) {
           console.log("error creating channel " + channelName);
         });
