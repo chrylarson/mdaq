@@ -187,13 +187,42 @@ angular.module('yoApp')
             createChannel(deviceName, "Accelerometer Y", 1);
             createChannel(deviceName, "Accelerometer Z", 2);
         }).error(function (response, status) {
-          if(response === "Device already registered.") {
-            //createChannel(deviceName, "Accelerometer X", 0);
-            //createChannel(deviceName, "Accelerometer Y", 1);
-            //createChannel(deviceName, "Accelerometer Z", 2);
-          }
+          getDevice(deviceName);
+          
           console.log("error registering phone");
         });   
+    };
+
+    function getDevice (deviceName) {
+      var createUrl = $rootScope.url + '/devices/' + deviceName;
+        $http({
+            url: createUrl,
+            method: "GET",
+            timeout: 10000,
+            headers: {'Content-Type': 'application/json', 'x-ni-apikey':'MGCTApKKBaInxrBIsSGYeHAWALYcnnLM'}
+        }).success(function (response) {
+          console.log(response);
+          $scope.device = response;
+          getChannels(deviceName);
+        }).error(function (response, status) {
+          console.log("error updating phone");
+        });
+    };
+
+    function getChannels (deviceName) {
+      console.log("getting channels");
+      var createUrl = $rootScope.url + '/devices/' + deviceName + '/channels/';
+        $http({
+            url: createUrl,
+            method: "GET",
+            timeout: 10000,
+            headers: {'Content-Type': 'application/json', 'x-ni-apikey':'MGCTApKKBaInxrBIsSGYeHAWALYcnnLM'}
+        }).success(function (response) {
+          console.log(response);
+          $scope.$storage.channels = response;
+        }).error(function (response, status) {
+          console.log("error updating phone");
+        });
     };
 
     function createChannel (deviceId, channelName, channelId) {
