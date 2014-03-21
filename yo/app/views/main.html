@@ -6,9 +6,8 @@
   <h1>'Allo, 'Allo!</h1>
   <p class="lead">
     <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
+    Always a pleasure instrumenting your devices.
   </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!</a></p>
 </div>
 
 <div>
@@ -36,7 +35,14 @@
   <li>Sample Time: {{accTimestamp}}</li>
   </ul>
 </div>
-
+<div class="row">
+  <div class="col-sm-6">
+    <button class="btn btn-success btn-block" ng-click="start()"><i class="glyphicon glyphicon-play"> Start</i></button>
+  </div>
+  <div class="col-sm-6">
+    <button class="btn btn-default btn-block" ng-click="pause()"><i class="glyphicon glyphicon-pause"> Pause</i></button>
+  </div>
+</div>
 <div class="footer">
   <p>♥ from the NI Cloud team</p>
 </div>

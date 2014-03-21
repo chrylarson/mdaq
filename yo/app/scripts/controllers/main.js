@@ -4,6 +4,16 @@ angular.module('yoApp')
   .controller('MainCtrl', function ($rootScope, $scope, $http, $localStorage, $sessionStorage, $interval, CordovaService) {
 
     var demoMode = true;
+    var intervalId;
+    var loops = 0;
+    var loopsCnt = 40;
+    var dt = 50;
+
+    var accXdata = [];
+    var accYdata = [];
+    var accZdata = [];
+    var accDt = [];
+
   	$scope.$storage = $localStorage;
     $scope.$storage.channels = [];
 
@@ -18,69 +28,131 @@ angular.module('yoApp')
     	console.log("Cordova Ready");
       demoMode = false;
       //navigator.accelerometer.getCurrentAcceleration(accelerometerSuccess, accelerometerError);
-      var intervalId = $interval(function () {
-        navigator.accelerometer.getCurrentAcceleration(accelerometerSuccess, accelerometerError);
-      }, 2000);
     });
 
-if(demoMode = true){
-var intervalId = $interval(function () {
-  var channelData = [];
-  var deviceId = '';
-  var currenTime = new Date().getTime();
-        $scope.$storage.channels.forEach(function (d, index) {
-          console.log(d.id);
-          if (d.channelId !== 0) {
-              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[2]});
-              deviceId =d.deviceId;
-          } 
-          
-          
-        });
+    $scope.start = function() {
+      if ( angular.isDefined(intervalId) ) return;
 
-        if(channelData.length>1){
-          console.log("Write Channel Data");
-            writeChannel(deviceId, channelData);
-          }
+      if(demoMode === true){
 
-      }, 2000);
-} else {
-  if (angular.isDefined(intervalId)) {
+        intervalId = $interval(function () {
+          demoSuccess();
+        }, dt);
+
+      } else {
+
+        intervalId = $interval(function () {
+          navigator.accelerometer.getCurrentAcceleration(accelerometerSuccess, accelerometerError);
+        }, dt);
+
+      }
+    };
+
+    $scope.pause = function() {
+      if (angular.isDefined(intervalId)) {
         $interval.cancel(intervalId);
         intervalId = undefined;
       }
-}
-    // onSuccess: Get a snapshot of the current acceleration
-    //
-    function accelerometerSuccess(acceleration) {
+    };
+
+    function demoSuccess() {
+
       var channelData = [];
       var deviceId = '';
       var currenTime = new Date().getTime();
-      console.log(acceleration);
+
+      //update display
+      $scope.accX = Math.random();
+      $scope.accY = Math.random();
+      $scope.accZ = Math.random();
+      $scope.accTimestamp = currenTime;
+      //$scope.$apply();
+
+      //build data array for current loop
+      accXdata.push($scope.accX);
+      accYdata.push($scope.accX);
+      accZdata.push($scope.accX);
+      accDt.push(loops * dt);
+      loops = loops + 1;
+
+      if(loops>loopsCnt){
+
+        $scope.$storage.channels.forEach(function (d, index) {
+          deviceId = d.deviceId;
+          if (d.channelName === "Accelerometer X") {
+              console.log("channel ID: " + d.id);
+                channelData.push({"t0":currenTime,"channelId":d.id,"dt":accDt,"values":accXdata});
+            } else if (d.channelName === "Accelerometer Y") {
+              console.log("channel ID: " + d.id);
+                channelData.push({"t0":currenTime,"channelId":d.id,"dt":accDt,"values":accYdata});
+            } else if (d.channelName === "Accelerometer Z") {
+              console.log("channel ID: " + d.id);
+                channelData.push({"t0":currenTime,"channelId":d.id,"dt":accDt,"values":accZdata});
+            }
+        });
+
+        console.log("Write Channel Data");
+        writeChannel(deviceId, channelData);
+
+        //reset loop
+        accXdata = [];
+        accYdata = [];
+        accZdata = [];
+        accDt = [];
+        loops = 0;
+
+      }
+
+    }
+
+    // onSuccess: Get a snapshot of the current acceleration
+    //
+    function accelerometerSuccess(acceleration) {
+
+      var channelData = [];
+      var deviceId = '';
+      var currenTime = new Date().getTime();
+
+      //update display
       $scope.accX = acceleration.x;
       $scope.accY = acceleration.y;
       $scope.accZ = acceleration.z;
       $scope.accTimestamp = acceleration.timestamp;
       $scope.$apply();
 
-      $scope.$storage.channels.forEach(function (d, index) {
-        console.log(d);
-        deviceId =d.deviceId;
-          if (d.channelName === "Accelerometer X") {
-            console.log("channel ID: " + d.id);
-              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[acceleration.x]});
-          } else if (d.channelName === "Accelerometer Y") {
-            console.log("channel ID: " + d.id);
-              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[acceleration.y]});
-          } else if (d.channelName === "Accelerometer Z") {
-            console.log("channel ID: " + d.id);
-              channelData.push({"t0":currenTime,"channelId":d.id,"dt":[0],"values":[acceleration.z]});
-          }
-      });
+      //build data array for current loop
+      accXdata.push(acceleration.x);
+      accYdata.push(acceleration.y);
+      accZdata.push(acceleration.z);
+      accDt.push(loops * dt);
+      loops = loops + 1;
 
-      if(channelData.length>1){
+      if(loops>loopsCnt){
+
+        $scope.$storage.channels.forEach(function (d, index) {
+          deviceId = d.deviceId;
+          if (d.channelName === "Accelerometer X") {
+              console.log("channel ID: " + d.id);
+                channelData.push({"t0":currenTime,"channelId":d.id,"dt":accDt,"values":accXdata});
+            } else if (d.channelName === "Accelerometer Y") {
+              console.log("channel ID: " + d.id);
+                channelData.push({"t0":currenTime,"channelId":d.id,"dt":accDt,"values":accYdata});
+            } else if (d.channelName === "Accelerometer Z") {
+              console.log("channel ID: " + d.id);
+                channelData.push({"t0":currenTime,"channelId":d.id,"dt":accDt,"values":accZdata});
+            }
+        });
+
         console.log("Write Channel Data");
         writeChannel(deviceId, channelData);
+
+        //reset loop
+        accXdata = [];
+        accYdata = [];
+        accZdata = [];
+        accDt = [];
+        loops = 0;
+
       }
 
     }
@@ -108,15 +180,17 @@ var intervalId = $interval(function () {
               "serialNumber": deviceName     
             },
             headers: {'Content-Type': 'application/json', 'x-ni-apikey':'MGCTApKKBaInxrBIsSGYeHAWALYcnnLM'}
-        }).success(function (result) {
-          $scope.$storage.device = result;
-          createChannel(deviceName, "Accelerometer X");
-        }).error(function (response, status) {
-          if(response === "Device already registered.") {
-            $scope.$storage.device = response;
+        }).success(function (response) {
+          console.log(response);
+          $scope.device = response;
             createChannel(deviceName, "Accelerometer X", 0);
             createChannel(deviceName, "Accelerometer Y", 1);
             createChannel(deviceName, "Accelerometer Z", 2);
+        }).error(function (response, status) {
+          if(response === "Device already registered.") {
+            //createChannel(deviceName, "Accelerometer X", 0);
+            //createChannel(deviceName, "Accelerometer Y", 1);
+            //createChannel(deviceName, "Accelerometer Z", 2);
           }
           console.log("error registering phone");
         });   
